@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from keras import Sequential
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -12,7 +13,7 @@ from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
 def train_model(
     model: Sequential,
     X_train: np.ndarray,
-    y_train: np.ndarray,
+    y_train: pd.Series,
     epochs: int,
     batch_size: int,
     model_save_path: Path,

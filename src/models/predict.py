@@ -8,7 +8,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 from tensorflow.keras.models import load_model  # type: ignore
 from tensorflow.keras.optimizers.legacy import Adam  # type: ignore
 from src.utils.project_functions import f1_score
-from src.data.data_preparation import load_preprocessed_data
+from src.data_processing.data_preparation import load_preprocessed_data
 from sklearn.metrics import (
     accuracy_score,
     precision_score,

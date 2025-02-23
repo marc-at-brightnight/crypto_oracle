@@ -9,9 +9,7 @@ def load_data(file_path: Path) -> pd.DataFrame:
     """
     Load data from csv file and return dataframe
     """
-    data = pd.read_csv(file_path)
-    print("Data loaded successfully")
-    return data
+    return pd.read_csv(file_path)
 
 
 def reset_random_seeds(seed: int = 1) -> None:
