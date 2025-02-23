@@ -13,7 +13,7 @@ from tensorflow.keras.callbacks import EarlyStopping  # type: ignore
 def train_model(
     model: Sequential,
     X_train: np.ndarray,
-    y_train: pd.Series,
+    y_train: np.ndarray,
     epochs: int,
     batch_size: int,
     model_save_path: Path,

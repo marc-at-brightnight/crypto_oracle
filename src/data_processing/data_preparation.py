@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 import polars as pl
@@ -10,6 +11,17 @@ import pickle
 import datetime as dt
 
 from src import DATA_DIR
+
+
+@dataclass
+class ModelTrainData:
+    x_train: np.ndarray
+    x_test: np.ndarray
+    y_train: np.ndarray
+    y_test: np.ndarray
+    time_test: np.ndarray
+    price_df: pl.DataFrame
+    scaler: StandardScaler
 
 
 def create_sequences(data, timesteps):
@@ -28,23 +40,25 @@ def load_raw_data(raw_data_dir_path: Path) -> pl.DataFrame:
 
     dfs = []
     for filename in os.listdir(raw_data_dir_path):
-        if 'parquet' not in filename:
+        if "parquet" not in filename:
             continue
 
         df = pl.read_parquet(raw_data_dir_path / filename)
 
-        if df['timestamp'].min() > latest_start:
-            latest_start = df['timestamp'].min()
+        if df["timestamp"].min() > latest_start:
+            latest_start = df["timestamp"].min()
 
-        if df['timestamp'].max() < earliest_end:
-            earliest_end = df['timestamp'].max()
+        if df["timestamp"].max() < earliest_end:
+            earliest_end = df["timestamp"].max()
 
         dfs.append(df)
 
-    timestamp = pd.date_range(latest_start, earliest_end, freq='H')
-    output_df = pl.DataFrame({'timestamp': timestamp}).cast({'timestamp': pl.Datetime('us')})
+    timestamp = pd.date_range(latest_start, earliest_end, freq="H")
+    output_df = pl.DataFrame({"timestamp": timestamp}).cast(
+        {"timestamp": pl.Datetime("us")}
+    )
     for df in dfs:
-        output_df = output_df.join(df, on='timestamp', how='left')
+        output_df = output_df.join(df, on="timestamp", how="left")
 
     if "ohlc_close" not in output_df.columns:
         raise ValueError("Missing 'ohlc_close' column")
@@ -52,31 +66,18 @@ def load_raw_data(raw_data_dir_path: Path) -> pl.DataFrame:
     return output_df
 
 
-def prepare_data(
-    df: pd.DataFrame, timesteps: int
-) -> tuple[
-    np.ndarray,
-    np.ndarray,
-    pd.Series,
-    pd.Series,
-    pd.Series,
-    pd.DataFrame,
-    StandardScaler,
-]:
+def prepare_data(df: pl.DataFrame, price_df, timesteps: int) -> ModelTrainData:
     """
     Function prepares data
     """
-    X = df.drop("timestamp", axis=1)
-    price = pd.DataFrame()
-    price["today"] = df["ohlc_close"]
-    price["next day"] = price["today"].shift(-1)
-    y = (price["next day"] > price["today"]).astype(int)
+    X = df.drop("timestamp")
+    y = price_df["y"].to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, shuffle=False
     )
     time_train, time_test = train_test_split(
-        df["timestamp"], test_size=0.2, shuffle=False
+        df["timestamp"].to_numpy(), test_size=0.2, shuffle=False
     )
 
     scaler = StandardScaler()
@@ -89,35 +90,20 @@ def prepare_data(
     y_test = y_test[timesteps - 1 :]
     time_test = time_test[timesteps:]
 
-    return X_train_reshaped, X_test_reshaped, y_train, y_test, time_test, price, scaler
+    return ModelTrainData(
+        X_train_reshaped, X_test_reshaped, y_train, y_test, time_test, price_df, scaler
+    )
 
 
-def save_preprocessed_data(
-    filename,
-    X_train: np.ndarray,
-    X_test: np.ndarray,
-    y_train: pd.Series,
-    y_test: pd.Series,
-    time_test: pd.Series,
-    price: pd.DataFrame,
-    scaler: StandardScaler,
-) -> None:
+def save_preprocessed_data(filename: Path, model_train_data: ModelTrainData) -> None:
     """
     Function saves preprocessed data
     """
     with open(filename, "wb") as f:
-        pickle.dump((X_train, X_test, y_train, y_test, time_test, price, scaler), f)
+        pickle.dump(model_train_data, f)
 
 
-def load_preprocessed_data(filename: Path) -> tuple[
-    np.ndarray,
-    np.ndarray,
-    pd.Series,
-    pd.Series,
-    pd.Series,
-    pd.DataFrame,
-    StandardScaler,
-]:
+def load_preprocessed_data(filename: Path) -> ModelTrainData:
     """
     Function loads preprocessed data
     """

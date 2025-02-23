@@ -13,6 +13,7 @@ class Inputs(BaseModel):
     raw_data_dir_path: Path = DATA_DIR / "raw"
     processed_dir_path: Path = DATA_DIR / "processed"
     model_save_dir_path: Path = DATA_DIR / "model_save"
+    feature_select: list[str] | Literal[True] = True
     timesteps: int = 5
     epochs: int = 1000
     batch_size: int = 50

@@ -11,15 +11,27 @@ def test_main():
         raw_data_dir_path=TESTS_DATA_DIR / "raw",
         processed_dir_path=TESTS_DATA_DIR / "processed",
         model_save_dir_path=TESTS_DATA_DIR / "model_save",
+        # skipping feature selection
+        feature_select=[
+            "adjusted_sopr",
+            "ohlc_close",
+            "ohlc_high",
+            "ohlc_low",
+            "ohlc_open",
+        ],
         epochs=1,
         batch_size=50,
     )
 
     outputs = main(inputs)
 
-    assert outputs.accuracy == pytest.approx(0.520179, abs=1e-4)
-    assert outputs.precision == pytest.approx(0.52017, abs=1e-4)
-    assert outputs.auc_roc_score == pytest.approx(0.5, abs=1e-4)
-    assert outputs.f1_score == pytest.approx(0.684365, abs=1e-4)
-    assert outputs.mcc == pytest.approx(0, abs=1e-4)
-    assert outputs.recall == pytest.approx(1, abs=1e-4)
+    assert outputs.model_dump() == pytest.approx(
+        {
+            "accuracy": 0.5208690680388793,
+            "precision": 0.5198161975875933,
+            "recall": 0.9977949283351709,
+            "f1_score": 0.6835347432024169,
+            "auc_roc_score": 0.5024604095357564,
+            "mcc": 0.03643784695741684,
+        }
+    )
