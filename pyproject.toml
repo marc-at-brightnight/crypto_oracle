@@ -1,0 +1,22 @@
+[project]
+name = "crypto-oracle"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "boruta>=0.4.3",
+    "keras-tcn>=3.5.1",
+    "numpy==1.24.4",
+    "pandas==1.5.3",
+    "scikit-learn>=1.6.1",
+    "tensorflow>=2.14.0",
+    "tensorflow-macos>=2.14.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.7",
+]
