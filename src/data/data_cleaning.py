@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from utils.project_functions import load_data
 
+
 def preprocess_data(data):
     """
     Handles missing values, ensures consistency in data types. Return preprocessed data as dataframe.
