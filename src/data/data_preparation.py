@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -15,7 +17,17 @@ def create_sequences(data, timesteps):
     return np.array(X)
 
 
-def prepare_data(df, timesteps):
+def prepare_data(
+    df: pd.DataFrame, timesteps: int
+) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    pd.Series,
+    pd.Series,
+    pd.Series,
+    pd.DataFrame,
+    StandardScaler,
+]:
     """
     Function prepares data
     """
@@ -46,8 +58,15 @@ def prepare_data(df, timesteps):
 
 
 def save_preprocessed_data(
-    filename, X_train, X_test, y_train, y_test, time_test, price, scaler
-):
+    filename,
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+    y_train: pd.Series,
+    y_test: pd.Series,
+    time_test: pd.Series,
+    price: pd.DataFrame,
+    scaler: StandardScaler,
+) -> None:
     """
     Function saves preprocessed data
     """
@@ -55,7 +74,15 @@ def save_preprocessed_data(
         pickle.dump((X_train, X_test, y_train, y_test, time_test, price, scaler), f)
 
 
-def load_preprocessed_data(filename):
+def load_preprocessed_data(filename: Path) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    pd.Series,
+    pd.Series,
+    pd.Series,
+    pd.DataFrame,
+    StandardScaler,
+]:
     """
     Function loads preprocessed data
     """

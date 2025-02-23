@@ -1,13 +1,14 @@
 import os
+from pathlib import Path
+
+from src.io_models.outputs import Outputs
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-import numpy as np
-import pandas as pd
 from tensorflow.keras.models import load_model  # type: ignore
 from tensorflow.keras.optimizers.legacy import Adam  # type: ignore
-from utils.project_functions import load_data, f1_score
-from data.data_preparation import load_preprocessed_data
+from src.utils.project_functions import f1_score
+from src.data.data_preparation import load_preprocessed_data
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -18,7 +19,7 @@ from sklearn.metrics import (
 )
 
 
-def predict(model_path, data_path, timesteps):
+def predict(model_path: Path, data_path: Path) -> Outputs:
     # Load the preprocessed data
     X_train, X_test, y_train, y_test, time_test, price, scaler = load_preprocessed_data(
         data_path
@@ -42,9 +43,11 @@ def predict(model_path, data_path, timesteps):
     y_test = y_test.astype(int)
     y_pred = y_pred.astype(int)
 
-    print("Accuracy:", accuracy_score(y_test, y_pred))
-    print("Precision:", precision_score(y_test, y_pred))
-    print("Recall:", recall_score(y_test, y_pred))
-    print("F1-score:", skl_f1_score(y_test, y_pred))
-    print("AUC-ROC Score:", roc_auc_score(y_test, y_pred))
-    print("MCC:", matthews_corrcoef(y_test, y_pred))
+    return Outputs(
+        accuracy=accuracy_score(y_test, y_pred),
+        precision=precision_score(y_test, y_pred),
+        recall=recall_score(y_test, y_pred),
+        f1_score=skl_f1_score(y_test, y_pred),
+        auc_roc_score=roc_auc_score(y_test, y_pred),
+        mcc=matthews_corrcoef(y_test, y_pred),
+    )

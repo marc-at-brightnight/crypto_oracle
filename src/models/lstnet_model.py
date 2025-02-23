@@ -2,9 +2,6 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-import random
-import numpy as np
-import tensorflow as tf
 from tensorflow.keras.layers import (
     Input,
     Conv1D,
@@ -14,12 +11,11 @@ from tensorflow.keras.layers import (
     GlobalAveragePooling1D,
     Add,
     Dropout,
-    BatchNormalization,
 )  # type: ignore
 from tensorflow.keras.models import Model  # type: ignore
 from tensorflow.keras.optimizers.legacy import Adam  # type: ignore
 from tensorflow.keras import metrics  # type: ignore
-from utils.project_functions import reset_random_seeds, f1_score
+from src.utils.project_functions import reset_random_seeds, f1_score
 
 # Resetting the seeds for reproducibility
 reset_random_seeds(seed=1)
