@@ -1,22 +1,20 @@
+from pathlib import Path
+
+import numpy as np
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras import backend as K  # type: ignore
 
 
-def load_data(file_path):
+def load_data(file_path: Path) -> pd.DataFrame:
     """
     Load data from csv file and return dataframe
     """
-    try:
-        data = pd.read_csv(file_path)
-        print("Data loaded successfully")
-        return data
-    except Exception as e:
-        print(f"Error loading data: {e}")
-        return None
+    data = pd.read_csv(file_path)
+    print("Data loaded successfully")
+    return data
 
 
-def reset_random_seeds(seed=1):
+def reset_random_seeds(seed: int = 1) -> None:
     import os
     import random
     import numpy as np
@@ -28,7 +26,7 @@ def reset_random_seeds(seed=1):
     random.seed(seed)
 
 
-def f1_score(y_true, y_pred):
+def f1_score(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     y_true = K.cast(y_true, "float32")
     y_pred = K.cast(y_pred, "float32")
 

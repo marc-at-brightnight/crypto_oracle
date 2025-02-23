@@ -1,17 +1,11 @@
 import pandas as pd
-import os
-from utils.project_functions import load_data
 
 
-def preprocess_data(data):
+def preprocess_data(data: pd.DataFrame) -> pd.DataFrame:
     """
     Handles missing values, ensures consistency in data types. Return preprocessed data as dataframe.
     """
-    try:
-        data.ffill(inplace=True)
-        data.bfill(inplace=True)
-        print("Data preprocessing completed successfully")
-        return data
-    except Exception as e:
-        print(f"Error in preprocessing data: {e}")
-        return None
+    data.ffill(inplace=True)
+    data.bfill(inplace=True)
+    print("Data preprocessing completed successfully")
+    return data

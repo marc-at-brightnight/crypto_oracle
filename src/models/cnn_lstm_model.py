@@ -14,14 +14,14 @@ from tensorflow.keras.layers import (
 )  # type: ignore
 from tensorflow.keras.optimizers.legacy import Adam  # type: ignore
 from tensorflow.keras import metrics  # type: ignore
-from utils.project_functions import reset_random_seeds, f1_score
+from src.utils.project_functions import reset_random_seeds, f1_score
 
 # Resetting the seeds for reproducibility
 reset_random_seeds(seed=1)
 
 
 # Build the CNN-LSTM model
-def build_cnn_lstm(input_shape):
+def build_cnn_lstm(input_shape: tuple[int, int]) -> Sequential:
     model = Sequential()
     model.add(Input(shape=input_shape))
     model.add(Conv1D(filters=64, kernel_size=3, activation="relu"))
