@@ -1,16 +1,14 @@
+import datetime as dt
 import os
+import pickle
 from dataclasses import dataclass
 from pathlib import Path
 
-import polars as pl
-import pandas as pd
 import numpy as np
+import pandas as pd
+import polars as pl
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import pickle
-import datetime as dt
-
-from src import DATA_DIR
 
 
 @dataclass
@@ -24,14 +22,11 @@ class ModelTrainData:
     scaler: StandardScaler
 
 
-def create_sequences(data, timesteps):
-    """
-    Function creates sequences for time series data
-    """
-    X = []
-    for i in range(len(data) - timesteps + 1):
-        X.append(data[i : i + timesteps])
-    return np.array(X)
+def create_sequences(data: np.ndarray, timesteps: int) -> np.ndarray:
+    windows = np.lib.stride_tricks.sliding_window_view(
+        data, window_shape=timesteps, axis=0
+    )
+    return np.moveaxis(windows, -1, 1)
 
 
 def load_raw_data(raw_data_dir_path: Path) -> pl.DataFrame:
@@ -45,11 +40,11 @@ def load_raw_data(raw_data_dir_path: Path) -> pl.DataFrame:
 
         df = pl.read_parquet(raw_data_dir_path / filename)
 
-        if df["timestamp"].min() > latest_start:
-            latest_start = df["timestamp"].min()
+        if df["timestamp"].min() > latest_start:  # type: ignore
+            latest_start = df["timestamp"].min()  # type: ignore
 
-        if df["timestamp"].max() < earliest_end:
-            earliest_end = df["timestamp"].max()
+        if df["timestamp"].max() < earliest_end:  # type: ignore
+            earliest_end = df["timestamp"].max()  # type: ignore
 
         dfs.append(df)
 

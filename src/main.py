@@ -34,7 +34,6 @@ MODEL_MAP: dict[Model, Callable[[tuple[int, int]], Sequential]] = {
 def main(inputs: Inputs) -> Outputs:
     # Data cleaning and preprocessing
     logger.info(f"Loading data from {inputs.raw_data_dir_path}...")
-    # data = load_data(inputs.raw_data_dir_path)
     df = load_raw_data(inputs.raw_data_dir_path)
     logger.info("Data loaded. Starting preprocessing...")
     cleaned_df = preprocess_data(df)

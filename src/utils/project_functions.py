@@ -1,15 +1,5 @@
-from pathlib import Path
-
 import numpy as np
-import pandas as pd
 from tensorflow.keras import backend as K  # type: ignore
-
-
-def load_data(file_path: Path) -> pd.DataFrame:
-    """
-    Load data from csv file and return dataframe
-    """
-    return pd.read_csv(file_path)
 
 
 def reset_random_seeds(seed: int = 1) -> None:
