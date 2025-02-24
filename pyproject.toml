@@ -7,8 +7,10 @@ requires-python = ">=3.11"
 dependencies = [
     "boruta>=0.4.3",
     "keras-tcn>=3.5.1",
+    "loguru>=0.7.3",
     "numpy==1.24.4",
     "pandas==1.5.3",
+    "polars>=1.23.0",
     "pydantic>=2.10.6",
     "scikit-learn>=1.6.1",
     "tensorflow>=2.14.0",
@@ -18,6 +20,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "mypy>=1.15.0",
+    "pyarrow>=19.0.1",
+    "pyinstrument>=5.0.1",
     "pytest>=8.3.4",
     "ruff>=0.9.7",
 ]

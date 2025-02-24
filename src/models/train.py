@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from keras import Sequential
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"

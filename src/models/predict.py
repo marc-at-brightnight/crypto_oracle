@@ -8,7 +8,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 from tensorflow.keras.models import load_model  # type: ignore
 from tensorflow.keras.optimizers.legacy import Adam  # type: ignore
 from src.utils.project_functions import f1_score
-from src.data.data_preparation import load_preprocessed_data
+from src.data_processing.data_preparation import load_preprocessed_data
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -21,9 +21,7 @@ from sklearn.metrics import (
 
 def predict(model_path: Path, data_path: Path) -> Outputs:
     # Load the preprocessed data
-    X_train, X_test, y_train, y_test, time_test, price, scaler = load_preprocessed_data(
-        data_path
-    )
+    model_train_data = load_preprocessed_data(data_path)
 
     # Load the model without compiling it
     model = load_model(model_path, compile=False)
@@ -36,11 +34,11 @@ def predict(model_path: Path, data_path: Path) -> Outputs:
     )
 
     # Make predictions
-    y_pred_prob = model.predict(X_test)
+    y_pred_prob = model.predict(model_train_data.x_test)
     y_pred = (y_pred_prob >= 0.5).astype(int)
 
     # Ensure y_test and y_pred are binary arrays
-    y_test = y_test.astype(int)
+    y_test = model_train_data.y_test.astype(int)
     y_pred = y_pred.astype(int)
 
     return Outputs(
